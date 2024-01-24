@@ -11,10 +11,11 @@ class Game:
         pygame.display.set_caption("DayOne")
         self.clock = pygame.time.Clock()
         self.level = Level()
+        self.font = './graphics/Pixellari.ttf'
 
     def display_fps(self):
         game_fps = self.clock.get_fps()
-        font = pygame.font.Font(None, 36)
+        font = pygame.font.Font(self.font, 36)
         fps_text_game = font.render(
             f"FPS: {int(game_fps)}", True, (0, 0, 0))
         self.screen.blit(fps_text_game, (10, 10))

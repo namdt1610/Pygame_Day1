@@ -13,6 +13,7 @@ def import_folder(path):
         for image in img_files:
             full_path = path + '/' + image
             image_surf = pygame.image.load(full_path).convert_alpha()
+
             # scale up 2x the image
             sprite_sheet = pygame.transform.scale(image_surf, (image_surf.get_width(
             ) * scale, image_surf.get_height() * scale))
