@@ -22,7 +22,7 @@ class Overlay:
         tool_surf = self.tool_surf[self.player.selected_tool]
         tool_rect = tool_surf.get_rect(midbottom = OVERLAY_POSITIONS['tool'])
         tool_box_rect = tool_surf.get_rect(midbottom = OVERLAY_POSITIONS['tool box'])
-        self.display_surface.blit(tool_surf, tool_rect)
 
         # tool box
         self.display_surface.blit(self.tool_box, tool_box_rect)
+        self.display_surface.blit(tool_surf, tool_rect)

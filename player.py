@@ -103,9 +103,7 @@ class Player(pygame.sprite.Sprite):
                 self.tool_index += 1
                 self.tool_index = self.tool_index if self.tool_index < len(
                     self.tools) else 0
-                print(self.tool_index)
                 self.selected_tool = self.tools[self.tool_index]
-
     def get_status(self):
         # idle
         if self.direction.magnitude() == 0:

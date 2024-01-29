@@ -5,9 +5,9 @@ import pygame
 def import_folder(path):
     surface_list = []
 
-    frame_width = 96
-    frame_height = 96
-    scale = 2
+    frame_width = 48
+    frame_height = 48
+    scale = 1
 
     for _, __, img_files in walk(path):
         for image in img_files:
