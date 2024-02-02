@@ -13,4 +13,4 @@ class Tree(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(original_image, (int(
             original_image.get_width() * scale), int(original_image.get_height() * scale)))
         self.rect = self.image.get_rect(topleft=pos)
-        self.z = LAYERS['plant']
+        self.z = LAYERS['main']

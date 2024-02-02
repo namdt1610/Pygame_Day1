@@ -21,19 +21,26 @@ class Level:
     def setup(self):
         tmx_data = load_pygame('./graphics/map/map2k.tmx')
 
+        # house
+        for layer in ['HouseFloor', 'HouseFurnitureBottom']:
+            for x, y, surf in tmx_data.get_layer_by_name(layer).tiles():
+                Generic((x*TILE_SIZE, y*TILE_SIZE), surf,
+                        self.all_sprites, LAYERS['house bottom'])
+                
+        for layer in ['HouseWall', 'HouseFurnitureTop']:
+            for x, y, surf in tmx_data.get_layer_by_name(layer).tiles():
+                Generic((x*TILE_SIZE, y*TILE_SIZE), surf,
+                        self.all_sprites, LAYERS['house top'])
+
         self.player = Player(CENTER_POSITION, self.all_sprites)
-        self.ground_surf = Generic(
+
+        Generic(
             pos=(0, 0),
             surface=pygame.image.load(
-                './graphics/map/my_map.png').convert_alpha(),
+                './graphics/map/map2k.png').convert_alpha(),
             groups=self.all_sprites,
             z=LAYERS['ground']
         )
-
-        for i in range(20):
-            random_x = randint(0, 1000)
-            random_y = randint(0, 1000)
-            self.tree = Tree((random_x, random_y), self.all_sprites)
 
     def run(self, deltaTime):
         self.display_surface.fill('#71ddee')
