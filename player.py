@@ -17,6 +17,7 @@ class Player(pygame.sprite.Sprite):
         # general setup
         self.image = self.animations[self.status][self.frame_index]
         self.rect = self.image.get_rect(center=pos)
+
         self.z = LAYERS['main']
 
         # movement atributes
@@ -104,6 +105,7 @@ class Player(pygame.sprite.Sprite):
                 self.tool_index = self.tool_index if self.tool_index < len(
                     self.tools) else 0
                 self.selected_tool = self.tools[self.tool_index]
+
     def get_status(self):
         # idle
         if self.direction.magnitude() == 0:

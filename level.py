@@ -1,11 +1,9 @@
 import pygame
 from settings import *
 from player import Player
-from tree import Tree
 from overlay import Overlay
-from random import randint
-from sprites import Generic
-from pytmx.util_pygame import load_pygame
+from map import TileKind, Map
+from support import *
 
 
 class Level:
@@ -19,28 +17,24 @@ class Level:
         self.overlay = Overlay(self.player)
 
     def setup(self):
-        tmx_data = load_pygame('./graphics/map/map2k.tmx')
-
-        # house
-        for layer in ['HouseFloor', 'HouseFurnitureBottom']:
-            for x, y, surf in tmx_data.get_layer_by_name(layer).tiles():
-                Generic((x*TILE_SIZE, y*TILE_SIZE), surf,
-                        self.all_sprites, LAYERS['house bottom'])
-                
-        for layer in ['HouseWall', 'HouseFurnitureTop']:
-            for x, y, surf in tmx_data.get_layer_by_name(layer).tiles():
-                Generic((x*TILE_SIZE, y*TILE_SIZE), surf,
-                        self.all_sprites, LAYERS['house top'])
-
+        # setup MAP
+        tile_kinds = [
+            TileKind("dirt", "./graphics/Tiles/dirt.png", False),
+            TileKind(
+                "water", "./graphics/Sprout Lands - Sprites - Basic pack/Tilesets/water.png", False),
+        ]
+        self.map = Map("./start.map", tile_kinds, 32, (0, 0),
+                       self.all_sprites, z=LAYERS['ground'])
         self.player = Player(CENTER_POSITION, self.all_sprites)
 
-        Generic(
-            pos=(0, 0),
-            surface=pygame.image.load(
-                './graphics/map/map2k.png').convert_alpha(),
-            groups=self.all_sprites,
-            z=LAYERS['ground']
-        )
+        # Kích thước và vị trí ban đầu của bản đồ
+        # Generic(
+        #     pos=(0, 0),
+        #     surf=pygame.image.load(
+        #         './graphics/map/map2k.png').convert_alpha(),
+        #     groups=self.all_sprites,
+        #     z=LAYERS['ground']
+        # )
 
     def run(self, deltaTime):
         self.display_surface.fill('#71ddee')
@@ -71,11 +65,10 @@ class CameraGroup(pygame.sprite.Group):
         self.toggle_delay = 200
 
     def custom_draw(self, player):
+        # setup
         self.mouse_control()
         self.keyboard_control()
         self.internal_surf.fill('#71ddee')
-
-        # ground
 
         self.offset.x = (player.rect.centerx) - SCREEN_WIDTH / 2
         self.offset.y = (player.rect.centery) - SCREEN_HEIGHT / 2
@@ -92,20 +85,24 @@ class CameraGroup(pygame.sprite.Group):
 
         self.display_surface.blit(scaled_surf, new_center)
 
+        # phân layer
         for layer in LAYERS.values():
-            for sprite in self.sprites():
+            for sprite in sorted(self.sprites(), key=lambda sprite: sprite.rect.centery):
                 if sprite.z == layer:
                     offset_rect = sprite.rect.copy()
                     offset_rect.center -= self.offset
                     self.display_surface.blit(sprite.image, offset_rect)
 
+        # vẽ hitbox
         if self.draw_rect_enabled:
-            scaled_rect = scaled_surf.get_rect(center=new_center)
-            self.draw_rect(scaled_rect)
+            scaled_hitbox = scaled_surf.get_rect(center=new_center)
+            self.draw_hitbox(scaled_hitbox)
 
-    def draw_rect(self, rect):
+    # vẽ hitbox
+    def draw_hitbox(self, rect):
         pygame.draw.rect(self.display_surface, (0, 0, 0), rect, 2)
 
+    # điều khiển bằng chuột
     def mouse_control(self):
         events = pygame.event.get(pygame.MOUSEBUTTONDOWN)
         pygame.event.clear(pygame.MOUSEBUTTONDOWN)
@@ -116,6 +113,7 @@ class CameraGroup(pygame.sprite.Group):
                 elif event.button == 5:
                     self.zoom_scale -= 0.01
 
+    # điều khiển bằng bàn phím
     def keyboard_control(self):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_o]:
