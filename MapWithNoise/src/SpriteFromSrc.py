@@ -13,8 +13,8 @@ class SpriteFromSrc(pg.sprite.Sprite):
                 image_rect= pg.image.load(self.img_src_path+'/'+image).convert()
                 #
                 _rect=image_rect.get_rect(center=(0,0))     # draw at center return rectangle
-                _rect.width=16
-                _rect.height=16
+                _rect.width=32
+                _rect.height=32
 
                 # width and height of rectangle in pixel
                 sprite = pg.sprite.Sprite()

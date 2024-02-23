@@ -1,45 +1,28 @@
-import pygame
-from settings import *
-from player import Player
+import pygame.display
 from overlay import Overlay
-from map import TileKind, Map
+from player import Player
+from settings import *
 from support import *
+from sprite import sprites, Sprite
 
 
 class Level:
     def __init__(self):
-        # get the display surface
+        # lây surf màn hình
         self.display_surface = pygame.display.get_surface()
 
-        # sprite groups
+        # setup các thứ trên level
         self.all_sprites = CameraGroup()
-        self.setup()
-        self.overlay = Overlay(self.player)
-
-    def setup(self):
-        # setup MAP
-        tile_kinds = [
-            TileKind("dirt", "./graphics/Tiles/dirt.png", False),
-            TileKind(
-                "water", "./graphics/Sprout Lands - Sprites - Basic pack/Tilesets/water.png", False),
-        ]
-        self.map = Map("./start.map", tile_kinds, 32, (0, 0),
-                       self.all_sprites, z=LAYERS['ground'])
         self.player = Player(CENTER_POSITION, self.all_sprites)
+        self.overlay = Overlay(self.player)
+        self.tree = Sprite("./graphics/tile/tree/tree_0.png", 50 * 32, 50 * 32)
+        self.tree = Sprite("./graphics/tile/tree/tree_1.png", 50 * 32, 50 * 32)
 
-        # Kích thước và vị trí ban đầu của bản đồ
-        # Generic(
-        #     pos=(0, 0),
-        #     surf=pygame.image.load(
-        #         './graphics/map/map2k.png').convert_alpha(),
-        #     groups=self.all_sprites,
-        #     z=LAYERS['ground']
-        # )
-
-    def run(self, deltaTime):
-        self.display_surface.fill('#71ddee')
+    def run(self, delta_time):
+        self.display_surface.fill((0, 0, 0, 0))
         self.all_sprites.custom_draw(self.player)
-        self.all_sprites.update(deltaTime)
+        self.all_sprites.custom_draw(self.tree)
+        self.all_sprites.update(delta_time)
         self.overlay.display()
 
 
@@ -52,50 +35,63 @@ class CameraGroup(pygame.sprite.Group):
         self.half_h = self.display_surface.get_size()[1] // 2
         self.keyboard_speed = 5
         self.mouse_speed = 0.4
-        self.zoom_scale = 1
-        self.internal_surf_size = (2000, 2000)
+
+        # ground
+        self.ground_surf = pygame.image.load('./MapWithNoise/src/my_map.png').convert_alpha()
+        self.ground_rect = self.ground_surf.get_rect(topleft=(0, 0))
+
+        # các thuộc tính để zoom
+        self.zoom_scale = 1.2  # thông số zoom
+        self.internal_surf_size = (1280, 720)
         self.internal_surf = pygame.Surface(
             self.internal_surf_size, pygame.SRCALPHA)
         self.internal_rect = self.internal_surf.get_rect(
             center=(self.half_w, self.half_h))
         self.internal_surf_size_vector = pygame.math.Vector2(
             self.internal_surf_size)
+        self.internal_offset = pygame.math.Vector2()
+        self.internal_offset.x = self.internal_surf_size[0] // 2 - self.half_w
+        self.internal_offset.y = self.internal_surf_size[1] // 2 - self.half_h
+
+        # Thuộc tính để vẽ hitbox
         self.draw_rect_enabled = False
         self.toggle_time = 0
         self.toggle_delay = 200
 
+    # vẽ trên camera
     def custom_draw(self, player):
-        # setup
         self.mouse_control()
         self.keyboard_control()
-        self.internal_surf.fill('#71ddee')
 
+        # fill internal_surf
+        self.internal_surf.fill((0, 0, 0, 0))
+
+        # ground (di chuyển theo player)
+        ground_offset = self.ground_rect.topleft - self.offset + self.internal_offset
+        self.internal_surf.blit(self.ground_surf, ground_offset)
+
+        # camera offset (theo dõi player)
         self.offset.x = (player.rect.centerx) - SCREEN_WIDTH / 2
         self.offset.y = (player.rect.centery) - SCREEN_HEIGHT / 2
-
-        scaled_surf_size = pygame.math.Vector2(
-            *self.internal_surf_size) * self.zoom_scale
-        scaled_surf = pygame.transform.scale(
-            self.internal_surf, scaled_surf_size)
-        new_center = pygame.math.Vector2(
-            (player.rect.centerx - self.offset.x) *
-            self.zoom_scale + self.half_w,
-            (player.rect.centery - self.offset.y) * self.zoom_scale + self.half_h
-        )
-
-        self.display_surface.blit(scaled_surf, new_center)
 
         # phân layer
         for layer in LAYERS.values():
             for sprite in sorted(self.sprites(), key=lambda sprite: sprite.rect.centery):
                 if sprite.z == layer:
-                    offset_rect = sprite.rect.copy()
-                    offset_rect.center -= self.offset
-                    self.display_surface.blit(sprite.image, offset_rect)
+                    #
+                    offset_pos = sprite.rect.topleft - self.offset + self.internal_offset
+                    self.internal_surf.blit(sprite.image, offset_pos)
+
+        # surface khi thu phóng
+        scaled_surf = pygame.transform.scale(self.internal_surf, self.internal_surf_size_vector * self.zoom_scale)
+        scaled_rect = scaled_surf.get_rect(center=(self.half_w, self.half_h))
+
+        self.display_surface.blit(scaled_surf, scaled_rect)
 
         # vẽ hitbox
         if self.draw_rect_enabled:
-            scaled_hitbox = scaled_surf.get_rect(center=new_center)
+            # hitbox camera
+            scaled_hitbox = scaled_surf.get_rect()
             self.draw_hitbox(scaled_hitbox)
 
     # vẽ hitbox
@@ -104,22 +100,28 @@ class CameraGroup(pygame.sprite.Group):
 
     # điều khiển bằng chuột
     def mouse_control(self):
-        events = pygame.event.get(pygame.MOUSEBUTTONDOWN)
-        pygame.event.clear(pygame.MOUSEBUTTONDOWN)
-        for event in events:
+        for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 4:
-                    self.zoom_scale += 0.01
+                    self.zoom_scale += 0.05
                 elif event.button == 5:
-                    self.zoom_scale -= 0.01
+                    self.zoom_scale -= 0.05
+                    if self.zoom_scale >= 5:
+                        pass
 
     # điều khiển bằng bàn phím
     def keyboard_control(self):
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_o]:
-            self.zoom_scale -= 0.01
-        if keys[pygame.K_p]:
-            self.zoom_scale += 0.01
-        if keys[pygame.K_i] and pygame.time.get_ticks() - self.toggle_time > self.toggle_delay:
-            self.draw_rect_enabled = not self.draw_rect_enabled
-            self.toggle_time = pygame.time.get_ticks()
+        if 0 < self.zoom_scale < 3:
+            if keys[pygame.K_EQUALS]:
+                self.zoom_scale += 0.05
+                if self.zoom_scale > 2.9:
+                    self.zoom_scale = 2.9
+            elif keys[pygame.K_MINUS]:
+                self.zoom_scale -= 0.05
+                print(self.zoom_scale)
+                if self.zoom_scale < 0.1:  # Đảm bảo không âm
+                    self.zoom_scale = 0.1
+            if keys[pygame.K_i] and pygame.time.get_ticks() - self.toggle_time > self.toggle_delay:
+                self.draw_rect_enabled = not self.draw_rect_enabled
+                self.toggle_time = pygame.time.get_ticks()

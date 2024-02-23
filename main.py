@@ -3,15 +3,17 @@ import pygame
 import sys
 from settings import *
 from level import Level
+from camera import create_screen
 
 
 class Game:
     def __init__(self):
         pygame.init()
-        pygame.display.set_caption("DayOne")
-        self.screen = pygame.display.set_mode(
-            (SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
+        # Set kích thước màn hình
+        self.screen = create_screen(SCREEN_WIDTH, SCREEN_HEIGHT, "DayOne")
+        # Set font chữ cho game
         self.font = './graphics/Pixellari.ttf'
+        # Lấy thời gian
         self.clock = pygame.time.Clock()
         self.level = Level()
 
@@ -26,7 +28,7 @@ class Game:
         game_clock = pygame.time.get_ticks()
         font = pygame.font.Font(self.font, 36)
         clock_text = font.render(
-            f"Clock: {(game_clock)/1000}", True, (0, 0, 0))
+            f"Clock: {(game_clock) / 1000}", True, (0, 0, 0))
         self.screen.blit(clock_text, (500, 10))
 
     def run(self):
@@ -36,8 +38,8 @@ class Game:
                     pygame.quit()
                     sys.exit()
 
-            deltaTime = self.clock.tick(FPS) / 1000
-            self.level.run(deltaTime)
+            delta_time = self.clock.tick(FPS) / 1000
+            self.level.run(delta_time)
             self.display_fps()
             self.display_clock()
 

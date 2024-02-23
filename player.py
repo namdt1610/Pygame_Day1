@@ -1,4 +1,3 @@
-import pygame
 from settings import *
 from support import *
 from timer import Timer
@@ -8,19 +7,19 @@ class Player(pygame.sprite.Sprite):
     def __init__(self, pos, group):
         super().__init__(group)
 
+        # Load hình ảnh, chuyển động của player
         self.import_assets()
 
         # graphics setup
-        self.status = 'idle_left'
+        self.status = 'idle_left' # Trạng thái mặc định
         self.frame_index = 0
+        self.image = self.animations[self.status][self.frame_index]
 
         # general setup
-        self.image = self.animations[self.status][self.frame_index]
         self.rect = self.image.get_rect(center=pos)
-
         self.z = LAYERS['main']
 
-        # movement atributes
+        # movement attributes
         self.direction = pygame.math.Vector2()
         self.pos = pygame.math.Vector2(self.rect.center)
         self.speed = 200
@@ -42,7 +41,7 @@ class Player(pygame.sprite.Sprite):
         self.selected_tool = self.tools[self.tool_index]
 
     def use_tool(self):
-        self.selected_tool
+        pass
 
     def import_assets(self):
         self.animations = {'axe_left': [], 'axe_right': [], 'rifle_left': [], 'rifle_right': [],
@@ -108,7 +107,7 @@ class Player(pygame.sprite.Sprite):
 
     def get_status(self):
         # idle
-        if self.direction.magnitude() == 0:
+        if self.direction.magnitude() == 0: # Vận tốc bằng 0 thì set trạng thái = idle
             self.status = 'idle_' + self.status.split('_')[1]
 
         # tool use
@@ -119,18 +118,19 @@ class Player(pygame.sprite.Sprite):
         for timer in self.timers.values():
             timer.update()
 
-    def move(self, deltaTime):
+    def move(self, delta_time):
         if self.direction.magnitude() > 0:
-            self.direction = self.direction.normalize()
+            self.direction = self.direction.normalize() # Cân bằng vận tốc khi di chuyển chéo
 
-        self.pos.x += self.direction.x * self.speed * deltaTime
+        self.pos.x += self.direction.x * self.speed * delta_time
         self.rect.centerx = self.pos.x
 
-        self.pos.y += self.direction.y * self.speed * deltaTime
+        self.pos.y += self.direction.y * self.speed * delta_time
         self.rect.centery = self.pos.y
 
-    def animate(self, deltaTime):
-        self.current_time += deltaTime
+    # Hoạt ảnh
+    def animate(self, delta_time):
+        self.current_time += delta_time
 
         if self.current_time > self.animation_speed:
             self.frame_index = (self.frame_index +
@@ -138,9 +138,9 @@ class Player(pygame.sprite.Sprite):
             self.image = self.animations[self.status][self.frame_index]
             self.current_time = 0
 
-    def update(self, deltaTime):
+    def update(self, delta_time):
         self.input()
         self.get_status()
         self.update_timers()
-        self.move(deltaTime)
-        self.animate(deltaTime)
+        self.move(delta_time)
+        self.animate(delta_time)
