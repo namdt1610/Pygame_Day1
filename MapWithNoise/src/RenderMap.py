@@ -30,7 +30,7 @@ class RenderMap:
         self.screen = pg.display
         self.surface = self.screen.set_mode((2048, 2048))
 
-        self.ground_sprite = sfs.SpriteFromSrc("img/ground_sprites")  # load ground sprite from src
+        self.ground_sprite = sfs.SpriteFromSrc("img/ground_sprites")  # load ground sprite from src_alpha
         self.group_sprite = self.ground_sprite.get_sprites()  # convert in to group
 
         self.water_sprite = sfs.SpriteFromSrc("img/water_sprites")  #
@@ -58,7 +58,7 @@ class RenderMap:
 
         print(len(self.world))
 
-        # plt.imsave(fname="map.png",cmap='gray',format="png",origin='lower',arr=self.world)
+        # plt.imsave(fname="ground.png",cmap='gray',format="png",origin='lower',arr=self.world)
         plt.show()
 
     def draw(self, pervalue):
@@ -74,7 +74,7 @@ class RenderMap:
     def fromNoiseToMap(self):
         # self.screen.get_surface().get
         print("done")
-        # pg.image.save(self.surface,"map.png")
+        # pg.image.save(self.surface,"ground.png")
         pg.display.flip()
         pg.image.save(self.surface, "my_map.png")
         running = True
