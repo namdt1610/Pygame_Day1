@@ -9,7 +9,7 @@ entity_factories = [
     lambda args: Entity(Player(), Sprite("../content/images/player.png"), Body(8, 28, 16, 16)),
 
     # 1
-    lambda args: Entity(Sprite("../content/images/tree/tree_0.png"), Body(14, 64, 16, 32)),
+    lambda args: Entity(Sprite("../content/images/env/tree_0.png"), Body(14, 64, 16, 32)),
 
     # 2
     lambda args: Entity(Sprite("../content/images/dirt.png"), Body()),

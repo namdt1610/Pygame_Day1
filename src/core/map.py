@@ -16,7 +16,8 @@ class TileKind:
 
 class Map:
     def __init__(self, data, tile_kinds):
-        global map
+        from src.core.engine import engine
+        engine.background_drawables.append(self)
         # Keep a list of different kinds of files (grass, sand, water, etc.)
         self.tile_kinds = tile_kinds
 

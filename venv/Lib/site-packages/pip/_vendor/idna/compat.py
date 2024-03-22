@@ -1,6 +1,9 @@
-from .core import *
 from .codec import *
 from typing import Any, Union
+from typing import Any, Union
+
+from .codec import *
+
 
 def ToASCII(label: str) -> bytes:
     return encode(label)

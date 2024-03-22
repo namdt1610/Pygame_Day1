@@ -3,4 +3,4 @@ from src.data.tile_types import tile_kinds
 
 
 def play():
-    Area("house.map", tile_kinds)
+    Area("start.map", tile_kinds)

@@ -6,22 +6,13 @@ map_folder_location = "../content/maps"
 
 class Area:
     def __init__(self, area_file, tile_types):
+        self.name = None
         self.map = None
         self.entities = []
         global area
         area = self
         self.tile_types = tile_types
         self.load_area_file(area_file)
-
-    def reset_everything(self):
-        from src.components.physics import triggers, bodies
-        from src.components.sprite import sprites
-        from src.components.entity import active_objs
-        triggers.clear()
-        bodies.clear()
-        sprites.clear()
-        active_objs.clear()
-        self.entities = []
 
     # Search for the first entity of a kind
     def search_for_first(self, kind):
@@ -39,7 +30,10 @@ class Area:
         data = file.read()
         file.close()
 
-        self.reset_everything()
+        self.name = area_file.split('.')[0].title().replace('_', ' ')
+
+        from src.core.engine import engine
+        engine.reset()
 
         # Split up the data by minus signs
         chunks = data.split('-')
@@ -52,12 +46,15 @@ class Area:
         # Load the entities
         self.entities = []
         entity_lines = entity_data.split('\n')[1:]
-        for line in entity_lines:
+        for i, line in enumerate(entity_lines, start=1):
             try:
                 items = line.split(',')
-                id = int(items[0])
-                x = int(items[1])
-                y = int(items[2])
-                self.entities.append(create_entity(id, x, y, items[3:]))
+                if all(item.strip() for item in items[:3]):  # Check if the first three items are not empty
+                    id = int(items[0])
+                    x = int(items[1])
+                    y = int(items[2])
+                    self.entities.append(create_entity(id, x, y, items[3:]))
+                else:
+                    print(f"Skipping line {i}: {line}\nReason: contains empty values.")
             except Exception as e:
                 print(f"Error parsing line: {line}. Error: {str(e)}")

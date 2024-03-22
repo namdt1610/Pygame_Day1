@@ -1,8 +1,8 @@
 import pygame
 
 from src.core.camera import camera
+from src.core.engine import engine
 
-sprites = []
 loaded = {}
 
 
@@ -14,10 +14,10 @@ class Sprite:
         else:
             self.image = pygame.image.load(image).convert_alpha()
             loaded[image] = self.image
-        sprites.append(self)  # Thêm sprite vào list sprites
+        engine.drawables.append(self)  # Thêm sprite vào list sprites
 
     def delete(self):
-        sprites.remove(self)
+        engine.drawables.remove(self)
 
     def draw(self, screen):
         screen.blit(self.image, (self.entity.x - camera.x, self.entity.y - camera.y))
