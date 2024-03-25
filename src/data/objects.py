@@ -6,16 +6,16 @@ from src.components.teleporter import Teleporter
 
 entity_factories = [
     # 0
-    lambda args: Entity(Player(), Sprite("../content/images/player.png"), Body(8, 28, 16, 16)),
+    lambda args: Entity(Player(), Sprite("player.png"), Body(8, 28, 16, 16)),
 
     # 1
-    lambda args: Entity(Sprite("../content/images/env/tree_0.png"), Body(14, 64, 16, 32)),
+    lambda args: Entity(Sprite("env/tree_0.png"), Body(25, 64, 20, 32)),
 
     # 2
-    lambda args: Entity(Sprite("../content/images/dirt.png"), Body()),
+    lambda args: Entity(Sprite("dirt.png"), Body()),
 
     # 3
-    lambda args: Entity(Teleporter(args[0], args[1], args[2]), Sprite("../content/images/teleporter.png")),
+    lambda args: Entity(Teleporter(args[0], args[1], args[2]), Sprite("teleporter.png")),
 ]
 
 

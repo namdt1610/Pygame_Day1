@@ -5,5 +5,5 @@ from src.stages.play import play
 e = Engine("DayOne")
 e.register("Menu", menu)
 e.register("Play", play)
-e.switch_to("Play")
+e.switch_to("Menu")
 e.run()

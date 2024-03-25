@@ -31,6 +31,9 @@ class Label:
         self.set_text(text)
         engine.ui_drawables.append(self)
 
+    def get_bounds(self):
+        return pygame.Rect(0, 0, self.surface.get_width(), self.surface.get_height())
+
     def set_text(self, text):
         self.text = text
         self.surface = self.font.render(self.text, anti_alias, self.color)
