@@ -16,5 +16,5 @@ def teleport(area_file, player_x, player_y):
 # Teleporter entities are used to teleport the player to another area
 class Teleporter(Trigger):
     def __init__(self, area_file, player_x=None, player_y=None, x=0, y=0, width=32, height=32):
-        super().__init__(lambda: teleport(area_file, int(player_x), int(player_y)), x, y, width, height)
+        super().__init__(lambda other: teleport(area_file, int(player_x), int(player_y)), x, y, width, height)
         print(area_file)

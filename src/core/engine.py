@@ -35,10 +35,11 @@ class Engine:
         func()
 
     def run(self):
-        from src.core.input import keys_down
+        from src.core.input import keys_down, mouse_buttons_down, mouse_buttons_just_pressed
 
         self.running = True
         while self.running:
+            mouse_buttons_just_pressed.clear()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
@@ -46,6 +47,10 @@ class Engine:
                     keys_down.add(event.key)
                 elif event.type == pygame.KEYUP:
                     keys_down.remove(event.key)
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    mouse_buttons_down.add(event.button)
+                elif event.type == pygame.MOUSEBUTTONUP:
+                    mouse_buttons_down.remove(event.button)
 
             # Update Code
             for a in self.active_objs:

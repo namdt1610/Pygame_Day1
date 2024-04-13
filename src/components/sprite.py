@@ -23,7 +23,13 @@ class Sprite:
         self.is_ui = is_ui
 
     def delete(self):
+        from src.core.engine import engine
         engine.drawables.remove(self)
+
+    def breakdown(self):
+        from src.core.engine import engine
+        if self in engine.drawables:
+            engine.drawables.remove(self)
 
     def draw(self, screen):
         pos = (self.entity.x - camera.x, self.entity.y - camera.y) \

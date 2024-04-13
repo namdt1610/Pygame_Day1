@@ -1,15 +1,19 @@
 import pygame
 
 from src.components.entity import Entity
+from src.components.inventory import Inventory
 from src.components.label import Label
 from src.components.physics import Body, triggers
 from src.components.sprite import Sprite
+from src.components.ui.inventory_view import InventoryView
 from src.core.area import area
 from src.core.camera import camera
 from src.core.engine import engine
 from src.core.input import is_key_pressed
+from src.core.math_ext import distance
 
 movement_speed = 2
+inventory = Inventory(20)
 
 
 class Player:
@@ -19,13 +23,14 @@ class Player:
 
         self.location_label = Entity(Label("main/Pixellari.ttf", "X:0 Y:0")).get(Label)
         self.area_name_label = Entity(Label("main/Pixellari.ttf", area.name)).get(Label)
+        self.inventory_window = Entity(InventoryView(inventory))
         self.location_label.entity.y = camera.height - 50
         self.location_label.entity.x = 10
         self.area_name_label.entity.x = 10
 
         # self.animations = {}
         # self.import_assets()
-        # self.status = 'down'
+        self.status = 'down'
         # self.frame_index = 0
         # self.image = self.animations[self.status][self.frame_index]
 
@@ -39,6 +44,37 @@ class Player:
 
         from src.core.engine import engine
         engine.active_objs.append(self)
+
+    def setup(self):
+        pass
+
+    def interact(self, mouse_pos):
+        from src.core.engine import engine
+        for usable in engine.usables:
+            if usable.entity.has(Sprite):
+                usable_sprite = usable.entity.get(Sprite)
+                x_sprite = usable.entity.x - camera.x
+                y_sprite = usable.entity.y - camera.y
+                width_sprite = usable_sprite.image.get_width()
+                height_sprite = usable_sprite.image.get_height()
+
+                if x_sprite < mouse_pos[0] < x_sprite + width_sprite and \
+                        y_sprite < mouse_pos[1] < y_sprite + height_sprite:
+                    my_sprite = self.entity.get(Sprite)
+
+                    # Calculate the distance between these two sprites, from their feet
+                    d = distance(x_sprite + usable_sprite.image.get_width() / 2,
+                                 y_sprite + usable_sprite.image.get_height(),
+                                 self.entity.x - camera.x + my_sprite.image.get_width() / 2,
+                                 self.entity.y - camera.y + my_sprite.image.get_height())
+
+                    # Call the usable function
+                    usable.on(self.entity, d)
+
+                    # We only want to interact with the first thing we click.
+                    # Return prevents anymore objects being interacted with on this
+                    # click
+                    return
 
     def update(self):
         # Update the player's location
@@ -72,6 +108,11 @@ class Player:
         if is_key_pressed(pygame.K_ESCAPE):
             engine.switch_to('Menu')
 
+        from src.core.input import is_mouse_just_pressed
+        mouse_pos = pygame.mouse.get_pos()
+        if is_mouse_just_pressed(1):
+            self.interact(mouse_pos)
+
         # Center the camera on player
         camera.x = self.entity.x - camera.width / 2 + sprite.image.get_width() / 2
         camera.y = self.entity.y - camera.height / 2 + sprite.image.get_height() / 2
@@ -79,4 +120,4 @@ class Player:
         # Check if the player is colliding with a trigger
         for t in triggers:
             if body.is_colliding_with(t):
-                t.on()
+                t.on(self.entity)

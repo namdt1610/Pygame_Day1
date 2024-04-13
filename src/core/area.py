@@ -14,6 +14,14 @@ class Area:
         self.tile_types = tile_types
         self.load_area_file(area_file)
 
+    # Remove an entity to the area
+    def remove_entity(self, e):
+        self.entities.remove(e)
+        for c in e.components:
+            g = getattr(c, "breakdown", None)
+            if callable(g):
+                c.breakdown()
+
     # Search for the first entity of a kind
     def search_for_first(self, kind):
         for e in self.entities:

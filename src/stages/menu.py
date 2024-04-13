@@ -16,8 +16,8 @@ def quit_game():
 
 def menu():
     Entity(Sprite("menu.png", is_ui=True))
-    new_game_button = Entity(Label("main/Pixellari.ttf", "New Game", 80, (255, 255, 255)))
-    quit_game_button = Entity(Label("main/Pixellari.ttf", "Quit", 80, (255, 255, 255)))
+    new_game_button = Entity(Label("main/Pixellari.ttf", "New Game", 80, (255, 255, 255)).check_hover())
+    quit_game_button = Entity(Label("main/Pixellari.ttf", "Quit", 80, (255, 255, 255)).check_hover())
 
     new_button_size = new_game_button.get(Label).get_bounds()
     quit_button_size = quit_game_button.get(Label).get_bounds()
