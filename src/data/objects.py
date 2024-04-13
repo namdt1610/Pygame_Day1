@@ -4,7 +4,7 @@ from src.components.physics import Body
 from src.components.player import Player
 from src.components.sprite import Sprite
 from src.components.teleporter import Teleporter
-from src.components.usable import Minable
+from src.components.usable import Minable, Choppable
 from src.data.item_types import item_types
 
 entity_factories = [
@@ -12,7 +12,7 @@ entity_factories = [
     lambda args: Entity(Player(), Sprite("player.png"), Body(8, 28, 16, 16)),
 
     # 1
-    lambda args: Entity(Sprite("env/tree_0.png"), Body(25, 64, 20, 32), Minable("tree")),
+    lambda args: Entity(Sprite("env/tree_0.png"), Body(25, 64, 20, 32), Choppable("tree", "env/tree_0_chopped.png")),
 
     # 2
     lambda args: Entity(Sprite("dirt.png"), Body()),

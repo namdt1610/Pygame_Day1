@@ -22,6 +22,13 @@ class Sprite:
             engine.drawables.append(self)  # Thêm sprite vào list sprites
         self.is_ui = is_ui
 
+    def set_image(self, image):
+        if image in loaded:
+            self.image = loaded[image]
+        else:
+            self.image = pygame.image.load(image_path + "/" + image)
+            loaded[image] = self.image
+
     def delete(self):
         from src.core.engine import engine
         engine.drawables.remove(self)

@@ -13,6 +13,7 @@ class ItemType:
         self.value = 0
         self.weight = 0
         self.stack_size = stack_size
+        self.stats = dict()
         for k in kwargs:
             self.stats[k] = kwargs[k]
 

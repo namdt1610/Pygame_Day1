@@ -13,7 +13,8 @@ from src.core.input import is_key_pressed
 from src.core.math_ext import distance
 
 movement_speed = 2
-inventory = Inventory(20)
+inventory = Inventory(10)
+message_time_seconds = 3
 
 
 class Player:
@@ -22,11 +23,14 @@ class Player:
         self.entity = None
 
         self.location_label = Entity(Label("main/Pixellari.ttf", "X:0 Y:0")).get(Label)
-        self.area_name_label = Entity(Label("main/Pixellari.ttf", area.name)).get(Label)
+        self.message_label = Entity(Label("main/Pixellari.ttf", area.name)).get(Label)
         self.inventory_window = Entity(InventoryView(inventory))
+
+        from src.core.camera import camera
         self.location_label.entity.y = camera.height - 50
         self.location_label.entity.x = 10
-        self.area_name_label.entity.x = 10
+        self.message_label.entity.x = 10
+        self.show_message(f"Entering {area.name}")
 
         # self.animations = {}
         # self.import_assets()
@@ -47,6 +51,10 @@ class Player:
 
     def setup(self):
         pass
+
+    def show_message(self, message):
+        self.message_label.set_text(message)
+        self.message_countdown = message_time_seconds * 60
 
     def interact(self, mouse_pos):
         from src.core.engine import engine
@@ -77,6 +85,10 @@ class Player:
                     return
 
     def update(self):
+        if self.message_countdown > 0:
+            self.message_countdown -= 1
+            if self.message_countdown <= 0:
+                self.message_label.set_text(" ")
         # Update the player's location
         self.location_label.set_text(f"X:{self.entity.x // 32} Y:{self.entity.y // 32}")
 

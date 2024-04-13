@@ -21,6 +21,7 @@ class Usable:
 class Choppable(Usable):
     def __init__(self, obj_name, chopped_image):
         super().__init__(obj_name)
+        self.entity = None
         self.chopped_image = chopped_image
         self.is_chopped = False
 

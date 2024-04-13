@@ -3,6 +3,8 @@ from src.components.entity import Entity
 
 class Window:
     def __init__(self, width=32, height=32):
+        self.entity = None
+        self.surface = None
         self.width = width
         self.height = height
         self.items = []
