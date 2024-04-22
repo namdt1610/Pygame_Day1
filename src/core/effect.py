@@ -21,4 +21,4 @@ class Effect:
         if self.life <= 0:
             global effects
             effects.remove(self)
-        screen.blit(self.image, (self.x - camera.x, self.y - camera.y))
+        screen.blit(self.image, (self.x + 7 - camera.x, self.y - 10 - camera.y))

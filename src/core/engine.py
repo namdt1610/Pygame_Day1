@@ -37,16 +37,18 @@ class Engine:
         func()
 
     def run(self):
-        from src.core.input import keys_down, mouse_buttons_down, mouse_buttons_just_pressed
+        from src.core.input import keys_down, mouse_buttons_down, mouse_buttons_just_pressed, key_just_pressed
 
         self.running = True
         while self.running:
             mouse_buttons_just_pressed.clear()
+            key_just_pressed.clear()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
                 elif event.type == pygame.KEYDOWN:
                     keys_down.add(event.key)
+                    key_just_pressed.add(event.key)
                 elif event.type == pygame.KEYUP:
                     keys_down.remove(event.key)
                 elif event.type == pygame.MOUSEBUTTONDOWN:
@@ -69,6 +71,10 @@ class Engine:
             # Draw the main objects
             for s in self.drawables:
                 s.draw(self.screen)
+
+            from src.core.effect import effects
+            for e in effects:
+                e.draw(self.screen)
 
             # Draw UI Stuff
             for l in self.ui_drawables:

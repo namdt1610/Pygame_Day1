@@ -9,7 +9,7 @@ class ItemType:
     def __init__(self, name, icon, stack_size=1, **kwargs):
         self.name = name
         self.icon_name = icon
-        self.icon = pygame.image.load(image_path + "/" + icon).convert()
+        self.icon = pygame.image.load(image_path + "/" + icon).convert_alpha()
         self.value = 0
         self.weight = 0
         self.stack_size = stack_size
