@@ -1,6 +1,23 @@
+import pygame
+
 from src.core.camera import camera
 
 effects = []
+
+hit_x_speed = 0
+hit_y_speed = -1
+hit_life = 60
+hit_size = 30
+hit_font = None
+hit_font_file = "../content/fonts/main/Pixellari.ttf"
+
+
+def create_hit_text(x, y, text, color=(255, 255, 255)):
+    global hit_font
+    if hit_font is None:
+        hit_font = pygame.font.Font(hit_font_file, hit_size)
+    image = hit_font.render(text, True, color)
+    Effect(x, y, hit_x_speed, hit_y_speed, hit_life, image)
 
 
 class Effect:

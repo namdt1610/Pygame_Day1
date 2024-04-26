@@ -61,6 +61,7 @@ class Map:
             return True
         return False
 
+    # Draw the map
     def draw(self, screen):
         # Go row by row
         from src.core.camera import camera

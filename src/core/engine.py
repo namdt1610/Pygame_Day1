@@ -12,6 +12,7 @@ class Engine:
         from src.core.camera import create_screen
         global engine
         engine = self
+        self.step = 0
 
         self.active_objs = []  # Anything with an update() method which can be called
 
@@ -43,6 +44,7 @@ class Engine:
         while self.running:
             mouse_buttons_just_pressed.clear()
             key_just_pressed.clear()
+            self.step += 1
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
@@ -72,6 +74,7 @@ class Engine:
             for s in self.drawables:
                 s.draw(self.screen)
 
+            # Draw effects
             from src.core.effect import effects
             for e in effects:
                 e.draw(self.screen)

@@ -1,3 +1,4 @@
+from src.components.enemy import Enemy
 from src.components.entity import Entity
 from src.components.inventory import DroppedItem
 from src.components.npc import NPC
@@ -10,10 +11,10 @@ from src.data.item_types import item_types
 
 entity_factories = [
     # 0
-    lambda args: Entity(Player(), Sprite("player/player.png"), Body(12, 40, 32, 20)),
+    lambda args: Entity(Player(100), Sprite("player/player.png"), Body(6, 40, 16, 16)),
 
     # 1
-    lambda args: Entity(Sprite("env/tree_0.png"), Body(0, 0, 0, 0), Choppable("tree", "env/tree_0_chopped.png")),
+    lambda args: Entity(Sprite("env/tree_0.png"), Body(50, 150, 60, 50), Choppable("tree", "env/tree_0_chopped.png")),
 
     # 2
     lambda args: Entity(Sprite("env/grass.png"), Body()),
@@ -29,7 +30,10 @@ entity_factories = [
     lambda args: Entity(Sprite("house.png"), Body(0, 160, 224, 140)),
 
     # 6
-    lambda args: Entity(Sprite(args[1]), NPC(args[0], args[2]))
+    lambda args: Entity(Sprite(args[1]), NPC(args[0], args[2])),
+
+    # 7
+    lambda args: Entity(Sprite(args[0]), Enemy(20, 4), Body(0, 0, 32, 32)),
 ]
 
 

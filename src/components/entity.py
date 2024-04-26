@@ -9,9 +9,24 @@ class Entity:
         for c in components:
             self.add(c)
 
-    def add(self, component):
-        self.components.append(component)
+    def delete_self(self):
+        from src.core.area import area
+        if self in area.entities:
+            area.entities.remove(self)
+        for c in self.components:
+            g = getattr(c, "breakdown", None)
+            if callable(g):
+                c.breakdown()
+        self.components.clear()
+        print("called delete self")
+
+    def add(self, component, perform_setup=True):
         component.entity = self
+        self.components.append(component)
+        if perform_setup:
+            g = getattr(component, "setup", None)
+            if callable(g):
+                component.setup()
 
     def remove(self, kind):
         c = self.get(kind)
