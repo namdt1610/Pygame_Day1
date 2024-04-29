@@ -1,5 +1,8 @@
 class Combat:
-    def __init__(self, health, on_death):
+    def __init__(self, health, on_death, inventory):
+        self.inventory = inventory
+        self.amount = None
+        self.entity = None
         self.health = health
         self.max_health = health
         self.global_cooldown = 0
@@ -10,30 +13,35 @@ class Combat:
         from src.core.engine import engine
         engine.active_objs.append(self)
 
-    def equip(self, item):
+    # Equip an item
+    def equip(self, item, amount):
         from src.components.entity import Entity
         from src.components.sprite import Sprite
         self.equipped = item
+        self.amount = amount
         print("equipping", self.equipped)
         self.weapon_sprite = Entity(Sprite(self.equipped.icon_name)).get(Sprite)
 
+    # Unequip an item
     def unequip(self):
-        print("calling unequip")
+        print("calling unequipped")
         self.equipped = None
         self.weapon_sprite.entity.delete_self()
         self.weapon_sprite = None
         print("Weapon sprite", self.weapon_sprite)
 
+    # Breakdown an item
     def breakdown(self):
         from src.core.engine import engine
         engine.active_objs.remove(self)
 
+    # Attack another entity
     def attack(self, other):
-        if self.equipped == None:
+        if self.equipped is None:
             # If we don't have any weapon, don't attack
             # If you want to do code for unarmed attacks,
             # put it here!
-            return
+            pass
 
         # If we are still on cooldown
         if self.global_cooldown > 0:
@@ -52,22 +60,45 @@ class Combat:
         if other.health <= 0:
             other.on_death(other.entity)
 
+    # Heal the player
+    def heal(self):
+        if self.equipped is None:
+            print("No item equipped")
+
+        heal = self.equipped.stats['heal']
+        self.health += heal
+        self.amount -= 1
+        self.inventory.remove(self.equipped, 1)
+        print(f'{self.equipped.icon_name} after healing: {self.amount}')
+        if self.amount <= 0:
+            self.unequip()
+
+        from src.core.effect import create_hit_text
+        create_hit_text(self.entity.x, self.entity.y, str(heal), (0, 255, 0))
+
+    # Perform an attack
     def perform_attack(self):
-        if self.equipped == None:
+        if self.equipped is None:
             # If we don't have any weapon, don't attack
             # If you want to do code for unarmed attacks,
             # put it here!
             return
+        if self.equipped.type == "weapon":
+            from src.components.physics import get_bodies_within_circle
+            nearby_objs = get_bodies_within_circle(self.entity.x,
+                                                   self.entity.y,
+                                                   self.equipped.stats['range'])
+            print("Nearby Objs", nearby_objs)
+            for o in nearby_objs:
+                print(o.entity.components)
+                if o.entity.has(Combat) and o.entity != self.entity:
+                    self.attack(o.entity.get(Combat))
 
-        from src.components.physics import get_bodies_within_circle
-        nearby_objs = get_bodies_within_circle(self.entity.x,
-                                               self.entity.y,
-                                               self.equipped.stats['range'])
-        print("Nearby Objs", nearby_objs)
-        for o in nearby_objs:
-            print(o.entity.components)
-            if o.entity.has(Combat) and o.entity != self.entity:
-                self.attack(o.entity.get(Combat))
+        elif self.equipped.type == "tool":
+            pass
+
+        elif self.equipped.type == "food":
+            self.heal()
 
     def update(self):
         if self.global_cooldown > 0:

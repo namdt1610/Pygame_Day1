@@ -6,9 +6,10 @@ image_path = "../content/images"
 
 
 class ItemType:
-    def __init__(self, name, icon, stack_size=1, **kwargs):
+    def __init__(self, name, icon, item_type, stack_size=1, **kwargs):
         self.name = name
         self.icon_name = icon
+        self.type = item_type
         self.icon = pygame.image.load(image_path + "/" + icon).convert_alpha()
         self.value = 0
         self.weight = 0
@@ -20,6 +21,8 @@ class ItemType:
 
 class ItemSlot:
     def __init__(self):
+        self.weight = None
+        self.value = None
         self.type = None
         self.amount = 0
 

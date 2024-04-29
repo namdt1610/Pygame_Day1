@@ -7,8 +7,9 @@ image_path = '../content/images'
 
 
 class Sprite:
-    def __init__(self, image, is_ui=False):
+    def __init__(self, image, is_ui=False, animation=None):
         self.entity = None
+        self.animation = animation
         if image in loaded:
             self.image = loaded[image]
         else:
@@ -21,6 +22,11 @@ class Sprite:
         else:
             engine.drawables.append(self)  # Thêm sprite vào list sprites
         self.is_ui = is_ui
+
+    def update(self, dt):
+        if self.animation:
+            self.animation.update(dt)
+            self.image = self.animation.get_current_frame()
 
     def set_image(self, image):
         if image in loaded:

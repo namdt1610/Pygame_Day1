@@ -1,20 +1,18 @@
-import pygame
-
 class Animation:
-    def __init__(self, images, duration):
+    def __init__(self, frames, duration):
         """
-        images: a list of image paths or pygame.Surface objects
-        duration: total duration of one loop of the animation
+        frames: danh sách các frame hình ảnh
+        duration: tổng thời gian của một chu kỳ animation
         """
-        self.frames = [pygame.image.load(img) if isinstance(img, str) else img for img in images]
+        self.frames = frames
         self.duration = duration
         self.current_time = 0
         self.current_frame_index = 0
 
     def update(self, dt):
         """
-        Update the animation state. Should be called once per frame.
-        dt: time elapsed since the last frame
+        Cập nhật trạng thái của animation. Nên được gọi một lần mỗi frame.
+        dt: thời gian đã trôi qua kể từ frame trước đó
         """
         self.current_time += dt
         while self.current_time >= self.duration:
@@ -23,6 +21,6 @@ class Animation:
 
     def get_current_frame(self):
         """
-        Get the current frame of the animation.
+        Lấy frame hiện tại của animation.
         """
         return self.frames[self.current_frame_index]

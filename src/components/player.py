@@ -25,7 +25,7 @@ def on_player_death(entity):
 
 class Player:
     def __init__(self, heath):
-        # self.animations = None
+        self.message_countdown = None
         from src.core.engine import engine
         engine.active_objs.append(self)
         self.entity = None
@@ -40,20 +40,6 @@ class Player:
         self.message_label.entity.x = 10
         self.show_message(f"Entering {area.name}")
 
-        # self.animations = {}
-        # self.import_assets()
-        self.status = 'down'
-        # self.frame_index = 0
-        # self.image = self.animations[self.status][self.frame_index]
-
-        # def import_assets(self):
-        #     self.animations = {'idle_up': [], 'idle_down': [], 'idle_left': [], 'idle_right': [],
-        #                        'run_up': [], 'run_down': [], 'run_left': [], 'run_right': [], }
-        #
-        #     for animation in self.animations.keys():
-        #         full_path = '../content/images/player/' + animation
-        #         self.animations[animation] = import_folder(full_path)
-
         from src.core.engine import engine
         engine.active_objs.append(self)
 
@@ -63,7 +49,7 @@ class Player:
 
     def setup(self):
         from src.components.combat import Combat
-        combat = Combat(self.heath, on_player_death)
+        combat = Combat(self.heath, on_player_death, inventory)
         self.entity.add(combat)
         self.combat = combat
         del self.heath
@@ -128,19 +114,15 @@ class Player:
 
         # Move the player
         if is_key_pressed(pygame.K_w):
-            self.status = 'run_up'
             self.entity.y -= movement_speed
         if is_key_pressed(pygame.K_s):
-            self.status = 'run_down'
             self.entity.y += movement_speed
         if not body.is_position_valid():
             self.entity.y = previous_y
 
         if is_key_pressed(pygame.K_d):
-            self.status = 'run_right'
             self.entity.x += movement_speed
         if is_key_pressed(pygame.K_a):
-            self.status = 'run_left'
             self.entity.x -= movement_speed
         if not body.is_position_valid():
             self.entity.x = previous_x
@@ -153,7 +135,8 @@ class Player:
 
         if self.combat.equipped is None and inventory.equipped_slot is not None:
             print("Equipping")
-            self.combat.equip(inventory.slots[inventory.equipped_slot].type)
+            self.combat.equip(inventory.slots[inventory.equipped_slot].type,
+                              inventory.slots[inventory.equipped_slot].amount)
 
         if self.combat.equipped is not None and inventory.equipped_slot is None:
             print("Unequipped", self.combat.equipped, inventory.equipped_slot)
