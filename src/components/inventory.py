@@ -42,6 +42,16 @@ class Inventory:
         if self.listener is not None:
             self.listener.refresh()
 
+    def get_best(self, stat):
+        best = {"power": 0, "item": None}
+        for s in self.slots:
+            if s.type is not None and stat in s.type.stats:
+                p = int(s.type.stats[stat])
+                if p > best["power"]:
+                    best["power"] = p
+                    best["item"] = s.type
+        return best
+
     def add(self, item_type, amount=1):
         # First sweep for any open stacks
         if item_type.stack_size > 1:
@@ -69,16 +79,6 @@ class Inventory:
                     return 0
 
         return amount
-
-    def get_best(self, stat):
-        best = {"power": 0, "item": None}
-        for s in self.slots:
-            if s.type is not None and stat in s.type.stats:
-                p = int(s.type.stats[stat])
-                if p > best["power"]:
-                    best["power"] = p
-                    best["item"] = s.type
-        return best
 
     def remove(self, item_type, amount=1):
         found = 0

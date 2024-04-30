@@ -2,11 +2,11 @@ from src.components.inventory import ItemType
 
 item_types = [
     # 0
-    ItemType("Orange", "fruits/orange.png", "food", 64, heal=5),
+    ItemType("Orange", "fruits/orange.png", "food", 1, heal=5),
     # 1
     ItemType("Salmon berry", "fruits/salmon_berry.png", "food", 64, heal=7),
     # 2
-    ItemType("Axe", "tools/axe.png", "weapon", 1, chop_power=5, cooldown=1, range=50),
+    ItemType("Axe", "tools/axe.png", None, 1, chop_power=5, cooldown=1),
     # 3
     ItemType("Pickaxe", "tools/pickaxe.png", "tool", 1, mine_power=5),
     # 4

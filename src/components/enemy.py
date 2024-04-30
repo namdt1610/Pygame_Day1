@@ -13,6 +13,8 @@ def on_enemy_death(entity):
 
 class Enemy:
     def __init__(self, health, weapon_item_id) -> None:
+        self.combat = None
+        self.entity = None
         self.health = health
         self.weapon = item_types[weapon_item_id]
         self.target = None
@@ -53,7 +55,7 @@ class Enemy:
         # Don't update as fast
         from src.core.engine import engine
 
-        if engine.step % 40 == self.step_to_update:
+        if engine.step % 50 == self.step_to_update:
             self.update_ai()
 
         if self.targeted_entity is not None:

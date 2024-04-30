@@ -1,6 +1,5 @@
 class Combat:
-    def __init__(self, health, on_death, inventory):
-        self.inventory = inventory
+    def __init__(self, health, on_death):
         self.amount = None
         self.entity = None
         self.health = health
@@ -14,13 +13,13 @@ class Combat:
         engine.active_objs.append(self)
 
     # Equip an item
-    def equip(self, item, amount):
+    def equip(self, item):
         from src.components.entity import Entity
         from src.components.sprite import Sprite
         self.equipped = item
-        self.amount = amount
-        print("equipping", self.equipped)
-        self.weapon_sprite = Entity(Sprite(self.equipped.icon_name)).get(Sprite)
+        if self.equipped is not None:
+            print("equipping", self.equipped.icon_name)
+            self.weapon_sprite = Entity(Sprite(self.equipped.icon_name)).get(Sprite)
 
     # Unequip an item
     def unequip(self):
@@ -67,11 +66,6 @@ class Combat:
 
         heal = self.equipped.stats['heal']
         self.health += heal
-        self.amount -= 1
-        self.inventory.remove(self.equipped, 1)
-        print(f'{self.equipped.icon_name} after healing: {self.amount}')
-        if self.amount <= 0:
-            self.unequip()
 
         from src.core.effect import create_hit_text
         create_hit_text(self.entity.x, self.entity.y, str(heal), (0, 255, 0))
@@ -93,9 +87,6 @@ class Combat:
                 print(o.entity.components)
                 if o.entity.has(Combat) and o.entity != self.entity:
                     self.attack(o.entity.get(Combat))
-
-        elif self.equipped.type == "tool":
-            pass
 
         elif self.equipped.type == "food":
             self.heal()

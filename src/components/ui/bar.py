@@ -2,7 +2,8 @@ import pygame
 
 
 class Bar:
-    def __init__(self, max, back_color, front_color, width=300, height=20):
+    def __init__(self, max, back_color, front_color, width=365, height=20):
+        self.entity = None
         self.amount = max
         self.max = max
         self.back_color = back_color

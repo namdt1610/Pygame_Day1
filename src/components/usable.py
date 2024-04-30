@@ -49,6 +49,7 @@ class Choppable(Usable):
 class Minable(Usable):
     def __init__(self, obj_name):
         super().__init__(obj_name)
+        self.entity = None
 
     def on(self, other, distance):
         from src.components.player import Player, inventory

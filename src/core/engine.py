@@ -22,7 +22,7 @@ class Engine:
 
         self.usables = []  # Anything that can be interacted with
 
-        self.clear_color = (154, 205, 50)  # Default color if nothing else is drawn somewhere
+        self.clear_color = (0, 0, 0)  # Default color if nothing else is drawn somewhere
         self.screen = create_screen(default_width, default_height, game_title)  # The rectangle in the window itself
         self.stages = {}
         self.current_stage = None

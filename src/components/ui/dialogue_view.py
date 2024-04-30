@@ -1,6 +1,5 @@
 import pygame
 
-from src.components.button import Button
 from src.components.entity import Entity
 from src.components.label import Label
 from src.components.sprite import Sprite
