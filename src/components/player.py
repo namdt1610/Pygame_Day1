@@ -21,7 +21,8 @@ message_time_seconds = 3
 
 def on_player_death(entity):
     from src.core.engine import engine
-    engine.switch_to('Play')
+    inventory.reset()
+    engine.switch_to('Menu')
 
 
 class Player:
@@ -178,6 +179,9 @@ class Player:
         if is_key_just_pressed(pygame.K_e):
             print("Key 'E' pressed")
             self.eat_orange()
+
+        if self.combat.health <= 0:
+            self.combat.on_death()
 
     def eat_orange(self):
         print("Eating an orange")

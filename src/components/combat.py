@@ -56,23 +56,9 @@ class Combat:
         if other.health <= 0:
             other.on_death(other.entity)
 
-    # Heal the player
-    def heal(self):
-        if self.equipped is None:
-            print("No item equipped")
-
-        heal = self.equipped.stats['heal']
-        self.health += heal
-
-        from src.core.effect import create_hit_text
-        create_hit_text(self.entity.x, self.entity.y, str(heal), (0, 255, 0))
-
     # Perform an attack
     def perform_attack(self):
         if self.equipped is None:
-            # If we don't have any weapon, don't attack
-            # If you want to do code for unarmed attacks,
-            # put it here!
             return
         if self.equipped.type == "weapon":
             from src.components.physics import get_bodies_within_circle
@@ -84,9 +70,6 @@ class Combat:
                 print(o.entity.components)
                 if o.entity.has(Combat) and o.entity != self.entity:
                     self.attack(o.entity.get(Combat))
-
-        elif self.equipped.type == "food":
-            self.heal()
 
     def update(self):
         if self.global_cooldown > 0:

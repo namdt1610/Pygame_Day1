@@ -40,7 +40,7 @@ class DialogueView:
 
         from src.core.camera import camera
         window_x = camera.width / 2 - dialogue_box_width / 2
-        window_y = camera.height - padding_bottom - dialogue_box_height
+        window_y = camera.height - padding_bottom - dialogue_box_height - 50
         self.window = create_window(window_x, window_y,
                                     dialogue_box_width, dialogue_box_height).get(Window)
 

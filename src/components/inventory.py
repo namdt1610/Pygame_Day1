@@ -139,6 +139,12 @@ class Inventory:
             value += i.value * i.amount
         return value
 
+    def reset(self):
+        for slot in self.slots:
+            slot.type = None
+            slot.amount = 0
+        self.notify()
+
 
 def pick_up(item, other):
     from src.components.player import Player, inventory
