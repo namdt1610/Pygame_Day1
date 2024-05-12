@@ -18,7 +18,7 @@ class Combat:
         from src.components.sprite import Sprite
         self.equipped = item
         if self.equipped is not None:
-            print("equipping", self.equipped.icon_name)
+            print(self.entity, "equipping", self.equipped.icon_name)
             self.weapon_sprite = Entity(Sprite(self.equipped.icon_name)).get(Sprite)
 
     # Unequip an item
@@ -36,17 +36,14 @@ class Combat:
 
     # Attack another entity
     def attack(self, other):
+        damage = int(self.equipped.stats['damage'])
         if self.equipped is None:
-            # If we don't have any weapon, don't attack
-            # If you want to do code for unarmed attacks,
-            # put it here!
-            pass
+            damage = 1
 
         # If we are still on cooldown
         if self.global_cooldown > 0:
             return
 
-        damage = int(self.equipped.stats['damage'])
         other.health -= damage
         self.global_cooldown = self.equipped.stats['cooldown'] * 60
         print(self.global_cooldown)

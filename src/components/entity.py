@@ -1,5 +1,3 @@
-from src.components.animation import Animation
-
 active_objs = []
 
 

@@ -33,7 +33,7 @@ entity_factories = [
     lambda args: Entity(Sprite(args[1]), NPC(args[0], args[2])),
 
     # 7
-    lambda args: Entity(Sprite(args[0]), Enemy(20, 4), Body(0, 0, 32, 32)),
+    lambda args: Entity(Sprite(args[0]), Enemy(10, 4), Body(0, 0, 32, 32)),
 ]
 
 

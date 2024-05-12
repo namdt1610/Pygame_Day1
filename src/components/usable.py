@@ -1,3 +1,8 @@
+import random
+
+from src.data.item_types import item_types
+
+
 class Action:
     def __init__(self, name, on):
         self.name = name
@@ -30,7 +35,10 @@ class Choppable(Usable):
         from src.components.sprite import Sprite
         player = other.get(Player)
         if self.is_chopped:
-            player.show_message("This tree is already chopped")
+            orange_item_type = item_types[0]  # Get the ItemType for 'Orange'
+            num_oranges = random.randint(1, 3)  # Get a random number between 2 and 3
+            inventory.add(orange_item_type, num_oranges)
+            player.show_message(f"You chopped a tree and found {num_oranges} oranges!")
             return
         chop_best = inventory.get_best("chop_power")
         if chop_best["power"] <= 0:

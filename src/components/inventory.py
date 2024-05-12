@@ -86,19 +86,15 @@ class Inventory:
             if slot.type == item_type:
                 if slot.amount < amount:
                     found += slot.amount
-                    continue
-                elif slot.amount == amount:
-                    found += amount
                     slot.amount = 0
                     slot.type = None
-                    self.notify()
-                    return found
                 else:
                     found += amount
                     slot.amount -= amount
-                    slot.type = None
-                    self.notify()
-                    return found
+                    if slot.amount == 0:
+                        slot.type = None
+                self.notify()
+                return found
         return found
 
     def has(self, item_type, amount=1):

@@ -19,7 +19,10 @@ def is_mouse_just_pressed(button):
 
 
 def is_key_just_pressed(key):
-    return key in key_just_pressed
+    if key in key_just_pressed:
+        key_just_pressed.remove(key)
+        return True
+    return False
 
 
 def is_mouse_hovering(rect):
